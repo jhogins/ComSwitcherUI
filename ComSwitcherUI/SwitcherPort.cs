@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.IO.Ports;
 using System.Threading;
 
@@ -55,6 +56,7 @@ public class SwitcherPort
                 OnMessageReceived(lastMessage);
             }
             catch (TimeoutException) { }
+            catch (IOException) { break; }
         }
     }
 
