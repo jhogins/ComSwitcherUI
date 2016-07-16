@@ -28,6 +28,7 @@ public class SwitcherPort
         serialPort.DataBits = DataBits;
         serialPort.StopBits = StopBits;
         serialPort.Handshake = Handshake;
+        serialPort.ReadTimeout = 250;
 
         readThread = new Thread(Read);
     }
@@ -55,5 +56,11 @@ public class SwitcherPort
             }
             catch (TimeoutException) { }
         }
+    }
+
+    internal void Close()
+    {
+        serialPort.Close();
+        readThread.Abort();
     }
 }

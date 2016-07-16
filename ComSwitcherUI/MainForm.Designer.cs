@@ -45,7 +45,7 @@
             // buttonTable
             // 
             this.buttonTable.ColumnCount = 1;
-            this.buttonTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 206F));
+            this.buttonTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 474F));
             this.buttonTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonTable.Location = new System.Drawing.Point(0, 0);
             this.buttonTable.Name = "buttonTable";
@@ -63,6 +63,7 @@
             this.Controls.Add(this.statusLabel);
             this.Name = "MainForm";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

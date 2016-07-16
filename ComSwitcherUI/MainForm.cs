@@ -18,7 +18,8 @@ namespace ComSwitcherUI
         enum LoadError
         {
             OK,
-            ConfigSchema
+            ConfigSchema,
+            FailedToOpen
         }
 
         LoadError loadError = LoadError.OK;
@@ -29,8 +30,15 @@ namespace ComSwitcherUI
         {
             InitializeComponent();
 
-            switcherPort.Open();
-            switcherPort.OnMessageReceived += SwitcherPort_OnMessageReceived;
+            try
+            {
+                switcherPort.Open();
+                switcherPort.OnMessageReceived += SwitcherPort_OnMessageReceived;
+            }
+            catch (Exception e)
+            {
+                loadError = LoadError.FailedToOpen;
+            }
             UpdateStatus();
 
             InitButtons();
@@ -77,15 +85,32 @@ namespace ComSwitcherUI
 
         void UpdateStatus()
         {
-            string connectionStatus;
-            if (switcherPort.IsConnected)
-                connectionStatus = "Connected";
-            else
-                connectionStatus = "Not Connected";
+            string stStatus;
+            if (loadError == LoadError.OK)
+            {
+                string connectionStatus;
+                if (switcherPort.IsConnected)
+                    connectionStatus = "Connected";
+                else
+                    connectionStatus = "Not Connected";
 
-            this.statusLabel.Text = String.Format("status: {0}  last message: {1}", 
-                connectionStatus,
-                lastMessage);
+                stStatus = String.Format("status: {0}  last message: {1}",
+                    connectionStatus,
+                    lastMessage);
+            }
+            else if (loadError == LoadError.FailedToOpen)
+            {
+                stStatus = "Failed to connect. Check to see if other switcher apps are running.";
+            }
+            else if (loadError == LoadError.ConfigSchema)
+            {
+                stStatus = "Failed to load config.csv. Check to make sure there are no errors";
+            }
+            else
+            {
+                stStatus = "unknown error";
+            }
+            this.statusLabel.Text = stStatus;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -96,6 +121,11 @@ namespace ComSwitcherUI
         private void button1_Click(object sender, EventArgs e)
         {
             switcherPort.SwitchToChannel(2);
+        }
+        
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            switcherPort.Close();
         }
     }
 }
